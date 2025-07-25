@@ -1,3 +1,9 @@
+## Modifications Notice
+
+This software is a modified version of the original work by Hybula B.V.
+Modifications made by [SideCloud](https://github.com/SideCloudGroup) in 2025.
+Original copyright and license terms apply.
+
 ## Licensing
 
 Copyright Hybula B.V.
