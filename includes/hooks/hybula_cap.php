@@ -37,7 +37,7 @@ Swal.fire({
 });
 </script>
 HTML;
-const hybulaCapLocations = ['login', 'register', 'checkout', 'ticket', 'contact'];
+const hybulaCapLocations = ['login', 'register', 'checkout', 'ticket', 'contact', 'reset'];
 
 if (! defined('WHMCS')) {
     die('This file cannot be accessed directly!');
@@ -51,8 +51,9 @@ if (! isset($_SESSION['adminid'])) {
         $onContactPage = $pageFile == 'contact' && in_array('contact', hybulaCapLocations);
         $onTicketPage = $pageFile == 'submitticket' && isset($_POST['subject']) && in_array('ticket', hybulaCapLocations);
         $onCheckoutPage = $pageFile == 'cart' && isset($_GET['a']) && $_GET['a'] == 'checkout' && in_array('checkout', hybulaCapLocations);
+        $onResetPage = $pageFile == 'index' && isset($_POST['email']) && in_array('reset', hybulaCapLocations);
 
-        if (hybulaCapEnabled && ($onLoginPage || $onRegisterPage || $onContactPage || $onTicketPage || $onCheckoutPage)) {
+        if (hybulaCapEnabled && ($onLoginPage || $onRegisterPage || $onContactPage || $onTicketPage || $onCheckoutPage || $onResetPage)) {
             if (! isset($_POST['cap-token'])) {
                 unset($_SESSION['uid']);
                 die('Missing captcha response in POST data!');
@@ -97,14 +98,15 @@ if (! isset($_SESSION['adminid'])) {
         $isContactPage = in_array('contact', hybulaCapLocations) && $pageFile == 'contact';
         $isTicketPage = in_array('ticket', hybulaCapLocations) && $pageFile == 'submitticket';
         $isCheckoutPage = in_array('checkout', hybulaCapLocations) && $pageFile == 'cart' && isset($_GET['a']) && $_GET['a'] == 'checkout';
+        $isResetPage = in_array('reset', hybulaCapLocations) && $vars['pagetitle'] == $vars['LANG']['pwreset'];
 
-        if ($isLoginPage || $isRegisterPage || $isContactPage || $isTicketPage || $isCheckoutPage) {
+        if ($isLoginPage || $isRegisterPage || $isContactPage || $isTicketPage || $isCheckoutPage || $isResetPage) {
             $siteURL = hybulaCapUrl;
             $siteKey = hybulaCapSite;
             return <<<HTML
                 <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    var form = document.querySelector('form');
+                    var form = document.querySelector('input[type=submit],#login,div.text-center > button[type=submit],#openTicketSubmit').parentNode;
                     if (form) {
                         var capDiv = document.createElement('div');
                         capDiv.innerHTML = '<cap-widget id="cap" data-cap-api-endpoint="$siteURL/$siteKey/"></cap-widget><br><br>';
