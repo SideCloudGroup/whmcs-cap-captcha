@@ -170,7 +170,13 @@ HTML
     );
 }
 
-if (hybulaCapEnabled && hybulaCapUrl !== '' && hybulaCapSite !== '' && hybulaCapSecret !== '' && ! isset($_SESSION['adminid'])) {
+// Use WHMCS's server-side admin context, not an authenticated admin session:
+// the login form has no adminid yet.
+// Do not infer this from a URL, submitted field or directory name: those can be
+// supplied by a client and custom admin directory names are supported by WHMCS.
+$hybulaCapAdminArea = defined('ADMINAREA') && ADMINAREA;
+
+if (hybulaCapEnabled && hybulaCapUrl !== '' && hybulaCapSite !== '' && hybulaCapSecret !== '' && ! $hybulaCapAdminArea && ! isset($_SESSION['adminid'])) {
     if (! empty($_POST)) {
         $pageFile = hybula_cap_page_file();
         $location = hybula_cap_match_location([
@@ -250,3 +256,4 @@ document.addEventListener('DOMContentLoaded', function () {
 HTML;
     });
 }
+
